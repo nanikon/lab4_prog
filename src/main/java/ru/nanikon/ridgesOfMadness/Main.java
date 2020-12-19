@@ -30,6 +30,7 @@ public class Main {
             human.decorate(cities[i], now.getDesign());
             now = Main.changeTime(now, cities, beings);
         }
+        //City l = strange.build("Labyrint");
         Human human = new Human();
         Hero teller = new Hero("Рассказчик");
         Hero dan = new Hero("Денфорт");

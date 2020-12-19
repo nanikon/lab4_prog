@@ -2,6 +2,7 @@ package ru.nanikon.ridgesOfMadness.life;
 
 import ru.nanikon.ridgesOfMadness.enviroment.City;
 import ru.nanikon.ridgesOfMadness.enviroment.InformativeObject;
+import ru.nanikon.ridgesOfMadness.exceptions.LifeException;
 
 import java.util.Arrays;
 
@@ -28,7 +29,9 @@ public class Hero extends Human implements IMovable, ISensible, IThinkable, ISee
 
     @Override
     public void decide(boolean condition, String name, IConditionFunc cf) {
-        if (condition) {
+        if (!getIsAlive()) {
+            throw new LifeException(this.toString() + " умер, и больше ничего не решит");
+        } else if (condition) {
             System.out.println(this.toString() + " решил совершить действие: " + name);
             cf.func();
         } else {
@@ -38,12 +41,18 @@ public class Hero extends Human implements IMovable, ISensible, IThinkable, ISee
 
     @Override
     public void talk(Hero other, String information) {
+        if (!getIsAlive()) {
+            throw new LifeException(this.toString() + " умер, и больше ничего не скажет");
+        }
         System.out.println(this.toString() + " сказал " + other.toString() + ": " + information);
         other.learn(information);
     }
 
     @Override
     public void changeFeeling(Feeling feeling) {
+        if (!getIsAlive()) {
+            throw new LifeException(this.toString() + " умер, и больше ничего не почувствует");
+        }
         this.feeling = feeling;
         this.checkFeeling();
     }
@@ -55,7 +64,9 @@ public class Hero extends Human implements IMovable, ISensible, IThinkable, ISee
 
     @Override
     public void guess(String thing, boolean condition) {
-        if (condition) {
+        if (!getIsAlive()) {
+            throw new LifeException(this.toString() + " умер, и больше ни о чем не догадается");
+        } else if (condition) {
             int l = this.information.length;
             this.information = Arrays.copyOf(this.information, l + 1);
             this.information[l] = thing;
@@ -67,6 +78,9 @@ public class Hero extends Human implements IMovable, ISensible, IThinkable, ISee
 
     @Override
     public void learn(String thing) {
+        if (!getIsAlive()) {
+            throw new LifeException(this.toString() + " умер, и больше ничего не узнает");
+        }
         int l = this.information.length;
         this.information = Arrays.copyOf(this.information, l + 1);
         this.information[l] = thing;
@@ -75,6 +89,9 @@ public class Hero extends Human implements IMovable, ISensible, IThinkable, ISee
 
     @Override
     public void see(InformativeObject obj) {
+        if (!getIsAlive()) {
+            throw new LifeException(this.toString() + " умер, и больше ничего не увидит");
+        }
         System.out.println(this.toString() + " смотрит на " + obj.toString());
         this.learn(obj.getInformation());
     }

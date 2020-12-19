@@ -3,6 +3,7 @@ package ru.nanikon.ridgesOfMadness.life;
 import ru.nanikon.ridgesOfMadness.enviroment.City;
 import ru.nanikon.ridgesOfMadness.enviroment.InformativeObject;
 import ru.nanikon.ridgesOfMadness.enviroment.Pattern;
+import ru.nanikon.ridgesOfMadness.exceptions.LifeException;
 
 abstract public class IntelligentBeing extends LivingBeing implements IBuilder {
     public IntelligentBeing(String name) {
@@ -18,8 +19,7 @@ abstract public class IntelligentBeing extends LivingBeing implements IBuilder {
             System.out.println(this.toString() + " строит " + build.toString());
             return build;
         } else {
-            System.out.println(this.toString() + " умер, и больше ничего не построит");
-            return null;
+            throw new LifeException(this.toString() + " умер, и больше ничего не построит");
         }
     }
 
@@ -29,7 +29,7 @@ abstract public class IntelligentBeing extends LivingBeing implements IBuilder {
             city.setDesign(design);
             System.out.println(this.toString() + " украшает " + city.toString() + " декоративным элементом " + design.getName());
         } else {
-            System.out.println(this.toString() + " умер, и больше ничего не украсит");
+            throw new LifeException(this.toString() + " умер, и больше ничего не украсит");
         }
     }
 
@@ -39,7 +39,7 @@ abstract public class IntelligentBeing extends LivingBeing implements IBuilder {
             city.addComponent(obj);
             System.out.println(this.toString() + " добавляет в " + city.toString() + " " + obj.toString());
         } else {
-            System.out.println(this.toString() + " умер, и больше ничего не добавит");
+            throw new LifeException(this.toString() + " умер, и больше ничего не добавит");
         }
     }
 }
