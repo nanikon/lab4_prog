@@ -6,7 +6,7 @@ public class City {
     private String name;
     private Pattern design;
     private int age;
-    private InformativeObject[] components = {};
+    private Building[] buildings = {};
 
     public City(String name) {
         this.name = name;
@@ -21,16 +21,17 @@ public class City {
 
     public int getAge() { return age; }
 
-    public void incAge() { ++age; }
+    private void incAge() { ++age; }
+
+    public void update() {
+        incAge();
+        for (Building build: buildings) {
+            build.update();
+        }
+    }
 
     public String getName() {
         return name;
-    }
-
-    public void addComponent(InformativeObject component) {
-        int l = components.length;
-        components = Arrays.copyOf(components, l + 1);
-        components[l] = component;
     }
 
     public String getCondition() {
@@ -52,7 +53,26 @@ public class City {
         System.out.println(this.toString() + " " + this.getCondition());
     }
 
-    public InformativeObject[] getObjects() { return components; }
+    public void addBuilding(Building building) {
+        int l = buildings.length;
+        buildings = Arrays.copyOf(buildings, l + 1);
+        buildings[l] = building;
+    }
+
+    public Building[] getBuildings() {
+        return buildings;
+    }
+
+    public boolean checkBuilding(Building building) {
+        boolean result = false;
+        for (Building build : getBuildings()) {
+            if (build.equals(building)) {
+                result = true;
+                break;
+            }
+        }
+        return result;
+    }
 
     @Override
     public String toString(){

@@ -1,6 +1,6 @@
 package ru.nanikon.ridgesOfMadness.enviroment;
 
-public class Bas extends InformativeObject {
+/*public class Bas extends InformativeObject {
     private String information;
 
     public Bas(String information) {
@@ -29,4 +29,4 @@ public class Bas extends InformativeObject {
     public int hashCode() {
         return information.hashCode();
     }
-}
+}*/

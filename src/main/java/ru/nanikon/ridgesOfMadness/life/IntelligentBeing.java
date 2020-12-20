@@ -1,5 +1,6 @@
 package ru.nanikon.ridgesOfMadness.life;
 
+import ru.nanikon.ridgesOfMadness.enviroment.Building;
 import ru.nanikon.ridgesOfMadness.enviroment.City;
 import ru.nanikon.ridgesOfMadness.enviroment.InformativeObject;
 import ru.nanikon.ridgesOfMadness.enviroment.Pattern;
@@ -13,13 +14,26 @@ abstract public class IntelligentBeing extends LivingBeing implements IBuilder {
     public abstract void dead();
 
     @Override
-    public City build(String name) {
+    public City establish(String name) {
         if (this.getIsAlive()) {
-            City build = new City(name);
-            System.out.println(this.toString() + " строит " + build.toString());
-            return build;
+            City city = new City(name);
+            System.out.println(this.toString() + " основывает " + city.toString());
+            return city;
         } else {
-            throw new LifeException(this.toString() + " умер, и больше ничего не построит");
+            throw new LifeException(this.toString() + " умер, и больше не сможет основать ни одного города");
+        }
+    }
+
+    @Override
+    public Building build(City city, String name, boolean order, int[] template) {
+        if (this.getIsAlive()) {
+            Building building = new Building(name, order, template);
+            city.addBuilding(building);
+            System.out.println(this.toString() + " строит " + building.toString() + " в " + city.toString());
+            System.out.println(building.getDescription());
+            return building;
+        } else {
+            throw new LifeException(this.toString() + " умер, и больше не сможет основать ни одного города");
         }
     }
 
@@ -34,10 +48,10 @@ abstract public class IntelligentBeing extends LivingBeing implements IBuilder {
     }
 
     @Override
-    public void addThing(City city, InformativeObject obj) {
+    public void addThing(Building building, InformativeObject obj) {
         if (this.getIsAlive()) {
-            city.addComponent(obj);
-            System.out.println(this.toString() + " добавляет в " + city.toString() + " " + obj.toString());
+            building.addObject(obj);
+            System.out.println(this.toString() + " добавляет в " + building.toString() + " " + obj.toString());
         } else {
             throw new LifeException(this.toString() + " умер, и больше ничего не добавит");
         }

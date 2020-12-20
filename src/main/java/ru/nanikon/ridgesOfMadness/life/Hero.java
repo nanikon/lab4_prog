@@ -1,5 +1,6 @@
 package ru.nanikon.ridgesOfMadness.life;
 
+import ru.nanikon.ridgesOfMadness.enviroment.Building;
 import ru.nanikon.ridgesOfMadness.enviroment.City;
 import ru.nanikon.ridgesOfMadness.enviroment.InformativeObject;
 import ru.nanikon.ridgesOfMadness.exceptions.LifeException;
@@ -7,7 +8,8 @@ import ru.nanikon.ridgesOfMadness.exceptions.LifeException;
 import java.util.Arrays;
 
 public class Hero extends Human implements IMovable, ISensible, IThinkable, ISeeable, ITalkable {
-    private City location;
+    private Building.Room location;
+    private City cityLocation;
     private Feeling feeling;
     private String[] information = {};
 
@@ -15,7 +17,9 @@ public class Hero extends Human implements IMovable, ISensible, IThinkable, ISee
         super(name);
     }
 
-    public City getLocation() { return location; }
+    public Building.Room getLocation() { return location; }
+
+    public City getCityLocation() { return cityLocation; }
 
     public String[] getInformation() { return information; }
 
@@ -23,8 +27,14 @@ public class Hero extends Human implements IMovable, ISensible, IThinkable, ISee
 
     @Override
     public void move(City city) {
-        location = city;
+        cityLocation = city;
         System.out.println(this.toString() + " переместился в " + city.toString());
+    }
+
+    @Override
+    public void go(Building.Room room) {
+        location = room;
+        System.out.println(this.toString() + " перешел в " + room.getBuilding().toString() + room.toString());
     }
 
     @Override
@@ -84,7 +94,7 @@ public class Hero extends Human implements IMovable, ISensible, IThinkable, ISee
         int l = this.information.length;
         this.information = Arrays.copyOf(this.information, l + 1);
         this.information[l] = thing;
-        System.out.println(this.toString() + " узнал о " + thing);
+        System.out.println(this.toString() + " узнал: " + thing);
     }
 
     @Override
@@ -94,6 +104,14 @@ public class Hero extends Human implements IMovable, ISensible, IThinkable, ISee
         }
         System.out.println(this.toString() + " смотрит на " + obj.toString());
         this.learn(obj.getInformation());
+    }
+
+    @Override
+    public void lookAround() {
+        InformativeObject[] objects = location.getObjects();
+        for (InformativeObject thing: objects) {
+            see(thing);
+        }
     }
 
     @Override

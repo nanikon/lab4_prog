@@ -1,8 +1,10 @@
 package ru.nanikon.ridgesOfMadness;
 
-import ru.nanikon.ridgesOfMadness.enviroment.Bas;
+import ru.nanikon.ridgesOfMadness.enviroment.Building;
 import ru.nanikon.ridgesOfMadness.enviroment.City;
+import ru.nanikon.ridgesOfMadness.enviroment.InformativeObject;
 import ru.nanikon.ridgesOfMadness.enviroment.Period;
+import ru.nanikon.ridgesOfMadness.exceptions.EndBuildingException;
 import ru.nanikon.ridgesOfMadness.life.*;
 
 public class Main {
@@ -17,24 +19,29 @@ public class Main {
         beings[0] = strange;
         beings[1] = new Dinosaur();
         beings[2] = new Mammal();
-        City labyrinth = strange.build("Лабиринт");
+        City labyrinth = strange.establish("Лабиринт");
         cities[0] = labyrinth;
-        strange.addThing(labyrinth, new Bas("страшная тайна"));
+        Building guildHall = strange.build(labyrinth, "Главное здание", false, new int[]{1, 2, 1});
+        guildHall.getRoom(1,0).setNextFurnitureCondition("песок");
+        guildHall.getRoom(1,1).setNextFurnitureCondition("пустота");
+        guildHall.getRoom(2,0).setLight(1);
+        strange.addThing(guildHall, new InformativeObject.Relief());
+        strange.addThing(guildHall, new InformativeObject.WallDrawing());
+        strange.addThing(guildHall, new InformativeObject.Furniture(2));
         strange.decorate(labyrinth, now.getDesign());
         now = Main.changeTime(now, cities, beings);
         while (now != Period.PRESENT) {
             int i = now.ordinal() - 1;
             Human human = new Human(names[i]);
             beings[3] = human;
-            cities[i + 1] = human.build(cityNames[i]);
+            cities[i + 1] = human.establish(cityNames[i]);
             human.decorate(cities[i], now.getDesign());
             now = Main.changeTime(now, cities, beings);
         }
-        //City l = strange.build("Labyrint");
         Human human = new Human();
         Hero teller = new Hero("Рассказчик");
         Hero dan = new Hero("Денфорт");
-        City camp = human.build("Лагерь");
+        City camp = human.establish("Лагерь");
         teller.move(camp);
         dan.move(camp);
         teller.changeFeeling(Feeling.STUNNED);
@@ -42,16 +49,32 @@ public class Main {
         teller.move(labyrinth);
         dan.move(labyrinth);
         labyrinth.findCondition();
+        teller.go(teller.getCityLocation().getBuildings()[0].getEntrance());
+        dan.go(teller.getCityLocation().getBuildings()[0].getEntrance());
+        teller.lookAround();
+        dan.lookAround();
         teller.changeFeeling(Feeling.NO_MENTAL_BALANCE);
         dan.changeFeeling(Feeling.NO_MENTAL_BALANCE);
-        teller.guess("что-то", teller.getLocation() == labyrinth);
-        dan.guess("что-то", teller.getLocation() == labyrinth);
+        try {
+            teller.go(teller.getLocation().nextRoom());
+        } catch (EndBuildingException e) {
+            System.out.println(e.getMessage());
+        }
+        try {
+            dan.go(dan.getLocation().nextRoom());
+        } catch (EndBuildingException e) {
+            System.out.println(e.getMessage());
+        }
+        teller.lookAround();
+        dan.lookAround();
+        teller.guess("что-то", teller.getCityLocation() == labyrinth);
+        dan.guess("что-то", teller.getCityLocation() == labyrinth);
         teller.decide(false, "поделиться догадкой", () -> {teller.talk(dan, "что-то");});
         dan.decide(false, "поделиться догадкой", () -> {dan.talk(teller, "что-то");});
         teller.changeFeeling(Feeling.PANIC);
         dan.changeFeeling(Feeling.PANIC);
-        teller.see(labyrinth.getObjects()[0]);
-        dan.see(labyrinth.getObjects()[0]);
+        //teller.see(labyrinth.getBuildings()[0]);
+        //dan.see(labyrinth.getBuildings()[0]);
         teller.changeFeeling(Feeling.DESTROYED_WORlD);
         dan.changeFeeling(Feeling.DESTROYED_WORlD);
     }
@@ -59,7 +82,7 @@ public class Main {
     public static Period changeTime(Period now, City[] cities, LivingBeing[] beings) {
         for (City city: cities) {
             if (city != null) {
-                city.incAge();
+                city.update();
             }
         }
         for (LivingBeing being: beings) {
