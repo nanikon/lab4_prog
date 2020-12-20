@@ -76,7 +76,6 @@ public class Building {
     public class Room {
         private InformativeObject[] objects = {};
         private int id;
-        private int light;
         private String nextFurnitureCondition = "рухлядь";
 
         public Room(int id) {
@@ -90,12 +89,6 @@ public class Building {
         }
 
         public InformativeObject[] getObjects() { return objects; }
-
-        public void setLight(int light) {
-            this.light = light;
-        }
-
-        public int getLight() { return light; }
 
         public Building getBuilding() { return Building.this; }
 

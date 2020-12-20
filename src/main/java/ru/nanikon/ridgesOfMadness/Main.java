@@ -24,7 +24,6 @@ public class Main {
         Building guildHall = strange.build(labyrinth, "Главное здание", false, new int[]{1, 2, 1});
         guildHall.getRoom(1,0).setNextFurnitureCondition("песок");
         guildHall.getRoom(1,1).setNextFurnitureCondition("пустота");
-        guildHall.getRoom(2,0).setLight(1);
         strange.addThing(guildHall, new InformativeObject.Furniture());
         strange.addThing(guildHall, new InformativeObject.WallDrawing());
         strange.addThing(guildHall, new InformativeObject.Relief());
@@ -49,6 +48,23 @@ public class Main {
         teller.move(labyrinth);
         dan.move(labyrinth);
         labyrinth.findCondition();
+        if (labyrinth.getAge() >= 4) {
+            class Defects extends InformativeObject {
+                private String name;
+
+                Defects(String name) {
+                    super("от времени здесь появились " + name);
+                    this.name = name;
+                }
+
+                @Override
+                public String toString() {
+                    return name;
+                }
+            }
+            guildHall.getRoom(1, 1).addObject(new Defects("трещины"));
+            guildHall.getRoom(2, 0).addObject(new Defects("расколы"));
+        }
         teller.go(teller.getCityLocation().getBuildings()[0].getEntrance());
         dan.go(teller.getCityLocation().getBuildings()[0].getEntrance());
         teller.lookAround();
