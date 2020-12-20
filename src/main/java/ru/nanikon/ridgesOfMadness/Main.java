@@ -25,9 +25,9 @@ public class Main {
         guildHall.getRoom(1,0).setNextFurnitureCondition("песок");
         guildHall.getRoom(1,1).setNextFurnitureCondition("пустота");
         guildHall.getRoom(2,0).setLight(1);
-        strange.addThing(guildHall, new InformativeObject.Relief());
+        strange.addThing(guildHall, new InformativeObject.Furniture());
         strange.addThing(guildHall, new InformativeObject.WallDrawing());
-        strange.addThing(guildHall, new InformativeObject.Furniture(2));
+        strange.addThing(guildHall, new InformativeObject.Relief());
         strange.decorate(labyrinth, now.getDesign());
         now = Main.changeTime(now, cities, beings);
         while (now != Period.PRESENT) {
@@ -57,10 +57,6 @@ public class Main {
         dan.changeFeeling(Feeling.NO_MENTAL_BALANCE);
         try {
             teller.go(teller.getLocation().nextRoom());
-        } catch (EndBuildingException e) {
-            System.out.println(e.getMessage());
-        }
-        try {
             dan.go(dan.getLocation().nextRoom());
         } catch (EndBuildingException e) {
             System.out.println(e.getMessage());
@@ -71,10 +67,24 @@ public class Main {
         dan.guess("что-то", teller.getCityLocation() == labyrinth);
         teller.decide(false, "поделиться догадкой", () -> {teller.talk(dan, "что-то");});
         dan.decide(false, "поделиться догадкой", () -> {dan.talk(teller, "что-то");});
+        try {
+            teller.go(teller.getLocation().nextRoom());
+            dan.go(dan.getLocation().nextRoom());
+        } catch (EndBuildingException e) {
+            System.out.println(e.getMessage());
+        }
+        teller.lookAround();
+        dan.lookAround();
         teller.changeFeeling(Feeling.PANIC);
         dan.changeFeeling(Feeling.PANIC);
-        //teller.see(labyrinth.getBuildings()[0]);
-        //dan.see(labyrinth.getBuildings()[0]);
+        try {
+            teller.go(teller.getLocation().nextRoom());
+            dan.go(dan.getLocation().nextRoom());
+        } catch (EndBuildingException e) {
+            System.out.println(e.getMessage());
+        }
+        teller.lookAround();
+        dan.lookAround();
         teller.changeFeeling(Feeling.DESTROYED_WORlD);
         dan.changeFeeling(Feeling.DESTROYED_WORlD);
     }

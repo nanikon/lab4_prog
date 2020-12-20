@@ -27,12 +27,18 @@ public class Hero extends Human implements IMovable, ISensible, IThinkable, ISee
 
     @Override
     public void move(City city) {
+        if (!getIsAlive()) {
+            throw new LifeException(this.toString() + " умер, и больше никуда не переместиться");
+        }
         cityLocation = city;
         System.out.println(this.toString() + " переместился в " + city.toString());
     }
 
     @Override
     public void go(Building.Room room) {
+        if (!getIsAlive()) {
+            throw new LifeException(this.toString() + " умер, и больше никуда не пойдет");
+        }
         location = room;
         System.out.println(this.toString() + " перешел в " + room.getBuilding().toString() + room.toString());
     }
@@ -55,7 +61,7 @@ public class Hero extends Human implements IMovable, ISensible, IThinkable, ISee
             throw new LifeException(this.toString() + " умер, и больше ничего не скажет");
         }
         System.out.println(this.toString() + " сказал " + other.toString() + ": " + information);
-        other.learn(information);
+        other.learn(information, true);
     }
 
     @Override
@@ -87,14 +93,15 @@ public class Hero extends Human implements IMovable, ISensible, IThinkable, ISee
     }
 
     @Override
-    public void learn(String thing) {
+    public void learn(String thing, boolean condition) {
         if (!getIsAlive()) {
             throw new LifeException(this.toString() + " умер, и больше ничего не узнает");
+        } else if (condition) {
+            int l = this.information.length;
+            this.information = Arrays.copyOf(this.information, l + 1);
+            this.information[l] = thing;
+            System.out.println(this.toString() + " узнал: " + thing);
         }
-        int l = this.information.length;
-        this.information = Arrays.copyOf(this.information, l + 1);
-        this.information[l] = thing;
-        System.out.println(this.toString() + " узнал: " + thing);
     }
 
     @Override
@@ -103,11 +110,14 @@ public class Hero extends Human implements IMovable, ISensible, IThinkable, ISee
             throw new LifeException(this.toString() + " умер, и больше ничего не увидит");
         }
         System.out.println(this.toString() + " смотрит на " + obj.toString());
-        this.learn(obj.getInformation());
+        this.learn(obj.getInformation(), (location.getId() == 1) | (!(obj instanceof InformativeObject.Relief)));
     }
 
     @Override
     public void lookAround() {
+        if (!getIsAlive()) {
+            throw new LifeException(this.toString() + " умер, и больше ничего не увидит");
+        }
         InformativeObject[] objects = location.getObjects();
         for (InformativeObject thing: objects) {
             see(thing);

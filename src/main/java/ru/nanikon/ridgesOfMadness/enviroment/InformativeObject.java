@@ -44,33 +44,20 @@ abstract public class InformativeObject {
     }
 
     public static class Furniture extends InformativeObject {
-        private int age;
-        private final int criticAge;
-        private String nextCondition;
         private String condition;
-
-        public Furniture(int criticAge) {
+        public Furniture() {
             super("здесь находится мебель");
-            this.age = 0;
-            this.criticAge = criticAge;
-            this.condition = "мебель";
+            condition = "мебель";
+        }
+
+        public Furniture(String information) {
+            super(information);
+            condition = "мебель";
         }
 
         public void update() {
-            ++age;
-            if (criticAge <= age) {
-                condition = nextCondition;
-            }
-        }
-
-        public void setNextCondition(String nextCondition) {
-            this.nextCondition = nextCondition;
-            System.out.println(this.nextCondition);
-        }
-
-        @Override
-        public String getInformation() {
-            return "здесь находится " + condition;
+            condition = "рухлядь";
+            setInformation("здесь находится " + condition);
         }
 
         @Override

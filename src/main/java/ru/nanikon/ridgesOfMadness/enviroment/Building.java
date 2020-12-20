@@ -84,11 +84,6 @@ public class Building {
         }
 
         public void addObject(InformativeObject object) {
-            if (object instanceof InformativeObject.Furniture) {
-                InformativeObject.Furniture furniture = (InformativeObject.Furniture) object;
-                furniture.setNextCondition(nextFurnitureCondition);
-                //System.out.println(1);
-            }
             int l = objects.length;
             objects = Arrays.copyOf(objects, l + 1);
             objects[l] = object;
@@ -109,10 +104,18 @@ public class Building {
         }
 
         public void update() {
-            for (InformativeObject obj: objects) {
-                if (obj instanceof InformativeObject.Furniture) {
-                    InformativeObject.Furniture furniture = (InformativeObject.Furniture) obj;
+            for (int i = 0; i < objects.length; i++) {
+                if (objects[i] instanceof InformativeObject.Furniture) {
+                    InformativeObject.Furniture furniture = (InformativeObject.Furniture) objects[i];
                     furniture.update();
+                    if (!nextFurnitureCondition.equals("рухлядь")) {
+                        objects[i] = new InformativeObject("здесь находится " + nextFurnitureCondition) {
+                            @Override
+                            public String toString() {
+                                return nextFurnitureCondition;
+                            }
+                        };
+                    }
                 }
             }
         }
